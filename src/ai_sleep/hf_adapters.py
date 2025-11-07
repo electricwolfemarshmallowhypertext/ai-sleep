@@ -78,7 +78,16 @@ def infer_kv_spec_from_tensor(
         
     Returns:
         List of KVSpec, one per layer
+        
+    Raises:
+        ValueError: If keys and values have different lengths
     """
+    if len(keys) != len(values):
+        raise ValueError(
+            f"Keys and values must have same length: "
+            f"len(keys)={len(keys)}, len(values)={len(values)}"
+        )
+    
     specs = []
     for k, v in zip(keys, values):
         # Assume shape [batch, n_heads, seq_len, head_dim]
