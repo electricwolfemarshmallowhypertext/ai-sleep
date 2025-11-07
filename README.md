@@ -202,7 +202,7 @@ You are free to:
 - Require attribution to the original author
 
 Under the following conditions:
-- **Attribution**: Credit must be given to Tionne Smith, Antiparty Press
+- **Attribution**: Credit must be given to Tionne Smith, Antiparty, Inc.
 - **NonCommercial**: Use is restricted to non-commercial applications
 - **ShareAlike**: Any adaptations must be licensed under the same CC-BY-NC-SA 4.0 terms
 
@@ -216,7 +216,7 @@ If you use this project in research or publication, please cite:
 @techreport{smith2025aisleep,
   author = {Smith, Tionne},
   title = {AI Sleep Constructs: Implementing Chronological Intelligence in Stateful Systems},
-  institution = {Antiparty Press},
+  institution = {Antiparty, Inc.},
   year = {2025},
   type = {Technical Note},
   doi = {10.5281/zenodo.17547016},
@@ -238,7 +238,7 @@ This project is licensed under CC-BY-NC-SA 4.0. Contributions must comply with t
 
 ## Acknowledgments
 
-Created by Tionne Smith, Antiparty Press.
+Created by Tionne Smith, Antiparty, Inc.
 
 ## Support
 
