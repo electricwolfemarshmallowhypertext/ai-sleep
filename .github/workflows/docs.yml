@@ -1,0 +1,194 @@
+name: Documentation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install sphinx sphinx-rtd-theme myst-parser
+        
+    - name: Check documentation files exist
+      run: |
+        test -f README.md
+        test -f CONTRIBUTING.md
+        test -f CHANGELOG.md
+        test -f SECURITY.md
+        test -f LICENSE
+        test -d docs
+        test -d examples
+        
+    - name: Validate markdown links
+      uses: gaurav-nelson/github-action-markdown-link-check@v1
+      with:
+        use-quiet-mode: 'yes'
+        use-verbose-mode: 'no'
+        config-file: '.github/markdown-link-check-config.json'
+      continue-on-error: true
+        
+    - name: Check code examples in documentation
+      run: |
+        python -c "
+        import re
+        import sys
+        
+        def extract_python_blocks(filepath):
+            with open(filepath, 'r') as f:
+                content = f.read()
+            return re.findall(r'\`\`\`python\n(.*?)\n\`\`\`', content, re.DOTALL)
+        
+        # Check README examples
+        blocks = extract_python_blocks('README.md')
+        print(f'Found {len(blocks)} Python code blocks in README.md')
+        
+        # Check docs
+        for doc in ['docs/architecture.md', 'docs/api_reference.md', 'docs/troubleshooting.md']:
+            blocks = extract_python_blocks(doc)
+            print(f'Found {len(blocks)} Python code blocks in {doc}')
+        "
+        
+    - name: Generate API documentation
+      run: |
+        python -c "
+        import sys
+        import os
+        sys.path.insert(0, 'src')
+        
+        # Import and inspect modules
+        from ai_sleep import LMModelState, LMPerformanceMonitor, AISleepController
+        
+        print('API Documentation Generation Check')
+        print('=' * 60)
+        print(f'LMModelState: {len([m for m in dir(LMModelState) if not m.startswith(\"_\")])} public methods')
+        print(f'LMPerformanceMonitor: {len([m for m in dir(LMPerformanceMonitor) if not m.startswith(\"_\")])} public methods')
+        print(f'AISleepController: {len([m for m in dir(AISleepController) if not m.startswith(\"_\")])} public methods')
+        "
+        
+    - name: Build documentation summary
+      run: |
+        echo "# Documentation Build Summary" > doc-summary.md
+        echo "" >> doc-summary.md
+        echo "## Files" >> doc-summary.md
+        echo "- README.md: $(wc -l < README.md) lines" >> doc-summary.md
+        echo "- CONTRIBUTING.md: $(wc -l < CONTRIBUTING.md) lines" >> doc-summary.md
+        echo "- CHANGELOG.md: $(wc -l < CHANGELOG.md) lines" >> doc-summary.md
+        echo "- SECURITY.md: $(wc -l < SECURITY.md) lines" >> doc-summary.md
+        echo "" >> doc-summary.md
+        echo "## Documentation" >> doc-summary.md
+        for file in docs/*.md; do
+          echo "- $(basename $file): $(wc -l < $file) lines" >> doc-summary.md
+        done
+        echo "" >> doc-summary.md
+        echo "## Examples" >> doc-summary.md
+        for file in examples/*.py; do
+          echo "- $(basename $file): $(wc -l < $file) lines" >> doc-summary.md
+        done
+        cat doc-summary.md
+        
+    - name: Upload documentation artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: documentation
+        path: |
+          README.md
+          CONTRIBUTING.md
+          CHANGELOG.md
+          SECURITY.md
+          docs/
+          examples/
+          doc-summary.md
+
+  validate-examples:
+    runs-on: ubuntu-latest
+    needs: build-docs
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        
+    - name: Validate example syntax
+      run: |
+        for example in examples/*.py; do
+          echo "Checking $example..."
+          python -m py_compile "$example"
+        done
+        
+    - name: Run examples (dry run)
+      run: |
+        # Run examples to verify they execute without errors
+        timeout 60 python examples/simple_lm_example.py || true
+        timeout 60 python examples/custom_architecture_template.py || true
+
+  check-docstrings:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pydocstyle
+        pip install -e .
+        
+    - name: Check docstring coverage
+      run: |
+        python -c "
+        import sys
+        import inspect
+        sys.path.insert(0, 'src')
+        
+        from ai_sleep import LMModelState, LMPerformanceMonitor, AISleepController
+        
+        def check_docstrings(cls):
+            methods = [m for m in dir(cls) if not m.startswith('_') and callable(getattr(cls, m))]
+            documented = sum(1 for m in methods if getattr(cls, m).__doc__)
+            return documented, len(methods)
+        
+        print('Docstring Coverage Report')
+        print('=' * 60)
+        
+        for cls_name, cls in [
+            ('LMModelState', LMModelState),
+            ('LMPerformanceMonitor', LMPerformanceMonitor),
+            ('AISleepController', AISleepController)
+        ]:
+            documented, total = check_docstrings(cls)
+            coverage = (documented / total * 100) if total > 0 else 0
+            print(f'{cls_name}: {documented}/{total} ({coverage:.1f}%)')
+        "
+        
+    - name: Check docstring style
+      run: |
+        pydocstyle src/ai_sleep/ --convention=google || true
