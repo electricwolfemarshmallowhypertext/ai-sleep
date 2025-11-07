@@ -24,8 +24,9 @@ try:
         set_pkv_in_inputs,
         convert_pkv_to_kvcache,
         convert_kvcache_to_pkv,
-        get_model_config
+        get_model_config,
     )
+
     C2C_AVAILABLE = True
 except ImportError:
     C2C_AVAILABLE = False
@@ -38,16 +39,18 @@ __all__ = [
 
 # Add C2C exports if torch is available
 if C2C_AVAILABLE:
-    __all__.extend([
-        "C2CFuser",
-        "CacheProjector",
-        "LayerGate",
-        "KVCache",
-        "KVSpec",
-        "HFCacheExtractor",
-        "get_pkv_from_outputs",
-        "set_pkv_in_inputs",
-        "convert_pkv_to_kvcache",
-        "convert_kvcache_to_pkv",
-        "get_model_config",
-    ])
+    __all__.extend(
+        [
+            "C2CFuser",
+            "CacheProjector",
+            "LayerGate",
+            "KVCache",
+            "KVSpec",
+            "HFCacheExtractor",
+            "get_pkv_from_outputs",
+            "set_pkv_in_inputs",
+            "convert_pkv_to_kvcache",
+            "convert_kvcache_to_pkv",
+            "get_model_config",
+        ]
+    )
