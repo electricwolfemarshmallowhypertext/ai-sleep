@@ -96,6 +96,7 @@ See `docs/c2c.md`.
 - Redaction **on** by default  
 - Cross-tenant **off** by default  
 - Metadata logged for audit  
+clean-history-backup
 
 ### When NOT to Fuse
 Skip fusion when:
@@ -106,6 +107,17 @@ Skip fusion when:
 
 ---
 
+
+### When NOT to Fuse
+Skip fusion when:
+- Tokenizers differ or rotary embeddings misalign  
+- Sequence-length mismatch > 25%  
+- Donor model flagged for privacy risk  
+- KV dtype/device mismatch  
+
+---
+
+main
 ## Testing
 ```bash
 python -m unittest discover -s tests -p "test_*.py" -v
@@ -122,8 +134,8 @@ Credit must be given to **Tionne Smith, Antiparty, Inc.**
 
 ## Citation
 
+clean-history-backup
 ```
-<<<<<<< HEAD
 
 Plain text citation:
 ```
@@ -195,6 +207,8 @@ This framework provides concrete implementations of:
 ### From Antiparty, Inc.
 
 (README for AI Sleep Constructs framework)
-=======
+
+```
+main
 Smith, T. (2025). AI Sleep Constructs: Implementing Chronological Intelligence in Stateful Systems. Zenodo. DOI: 10.5281/zenodo.17547016
 ```
