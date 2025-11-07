@@ -7,12 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **C2C (Cache-to-Cache)**: Cross-model KV cache fusion
+  - `C2CFuser` module for cache-to-cache transfer between models
+  - `CacheProjector` with low-rank adapters for efficient projection
+  - `LayerGate` for learnable per-layer fusion control
+  - `HFCacheExtractor` for HuggingFace model integration
+  - Conversion utilities between HF and C2C formats
+  - 19 comprehensive tests (all passing)
+  - Complete documentation with architecture diagrams
+  - Working demo (mock and real models)
+  - Integration points for sleep cycles
+
 ### Planned
 - WebSocket integration for real-time monitoring
 - Distributed sleep coordination for multi-model systems
 - Advanced visualization dashboard for sleep metrics
 - Integration with MLflow for experiment tracking
 - Support for quantized models
+- C2C projector training during deep sleep cycles
+- Automated C2C optimization via distillation
 
 ## [0.1.0] - 2025-01-07
 
