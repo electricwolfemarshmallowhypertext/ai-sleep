@@ -7,11 +7,6 @@ assignees: ''
 
 ---
 
-**Name: Bug report**
-**About:** Create a report to help us improve AI Sleep Constructs
-**Title:** "[BUG] "
-**Labels:** bug
-**Assignees:** ''
 
 **Describe the bug**
 A clear and concise description of what the bug is.
