@@ -135,7 +135,7 @@ Creates clear expectations and processes for contributors to maintain code quali
 ### Commit 9: Add license file for open distribution under CC BY-NC-SA 4.0 (LICENSE)
 
 **Description:**
-Applies Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International license to the project, requiring attribution to Tionne Smith and Antiparty, Inc., restricting commercial use, and requiring derivative works to use the same license.
+Applies Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International license to the project. This requires attribution to Tionne Smith and Antiparty, Inc., restricts commercial use, and requires derivative works to use the same license.
 
 **Affected Files:**
 - `LICENSE` - CC BY-NC-SA 4.0 license text
@@ -207,7 +207,7 @@ This rebase plan organizes the AI Sleep Constructs repository into 13 logical co
 
 The sequence ensures:
 - Foundation is established before building upon it
-- Code is implemented before tests verify it
+- Core code is implemented and then verified by comprehensive tests
 - Configuration files are added after the code they configure
 - Documentation is comprehensive and well-organized
 - The project follows best practices for open source development
