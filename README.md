@@ -45,5 +45,5 @@ This framework provides concrete implementations of:
 - HuggingFace Transformers 4.30+
 - NumPy
 
-### From GitHub
+### From Antiparty, Inc.
 
