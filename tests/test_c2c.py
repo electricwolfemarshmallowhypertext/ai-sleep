@@ -28,7 +28,7 @@ def create_dummy_kv(
     layers: int = 4,
     heads: int = 8,
     seq: int = 64,
-    dim: int = 128,
+    head_dim: int = 128,
     device: str = "cpu"
 ) -> KVCache:
     """Create dummy KV cache for testing."""
@@ -37,13 +37,13 @@ def create_dummy_kv(
     specs = []
     
     for _ in range(layers):
-        K = torch.randn(batch, heads, seq, dim, device=device)
-        V = torch.randn(batch, heads, seq, dim, device=device)
+        K = torch.randn(batch, heads, seq, head_dim, device=device)
+        V = torch.randn(batch, heads, seq, head_dim, device=device)
         keys.append(K)
         values.append(V)
         specs.append(KVSpec(
             n_heads=heads,
-            head_dim=dim,
+            head_dim=head_dim,
             seq_len=seq,
             dtype=K.dtype,
             device=K.device
@@ -162,8 +162,8 @@ class TestC2CFuser(unittest.TestCase):
         
     def test_fuse_shapes_match(self):
         """Test that fusion preserves shapes."""
-        src = create_dummy_kv(batch=1, layers=4, heads=8, seq=64, dim=128)
-        tgt = create_dummy_kv(batch=1, layers=4, heads=8, seq=64, dim=128)
+        src = create_dummy_kv(batch=1, layers=4, heads=8, seq=64, head_dim=128)
+        tgt = create_dummy_kv(batch=1, layers=4, heads=8, seq=64, head_dim=128)
         
         fuser = C2CFuser(n_layers=4, head_dim=128, rank=64)
         fused = fuser.fuse(src, tgt)
@@ -277,8 +277,8 @@ class TestC2CIntegration(unittest.TestCase):
     def test_end_to_end_fusion_workflow(self):
         """Test complete fusion workflow."""
         # Create source and target caches
-        src_cache = create_dummy_kv(batch=1, layers=4, heads=8, seq=32, dim=64)
-        tgt_cache = create_dummy_kv(batch=1, layers=4, heads=8, seq=32, dim=64)
+        src_cache = create_dummy_kv(batch=1, layers=4, heads=8, seq=32, head_dim=64)
+        tgt_cache = create_dummy_kv(batch=1, layers=4, heads=8, seq=32, head_dim=64)
         
         # Create fuser
         fuser = C2CFuser(n_layers=4, head_dim=64, rank=32)
