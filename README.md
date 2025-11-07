@@ -341,6 +341,6 @@ This framework provides concrete implementations of:
 - HuggingFace Transformers 4.30+
 - NumPy
 
-### From GitHub
+### From Antiparty, Inc.
 
 (README for AI Sleep Constructs framework)
