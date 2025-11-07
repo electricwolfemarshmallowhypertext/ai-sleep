@@ -7,11 +7,6 @@ assignees: ''
 
 ---
 
-**Name:** Feature request
-**About:** Suggest an idea for this project
-**Title:** "[FEATURE] "
-**Labels:** Enhancement
-**Assignees:** ''
 
 ---
 
